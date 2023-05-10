@@ -1,8 +1,8 @@
-// ...................Checkbox using object
+// ...................Checkbox using Array
 
 import React, { useState } from "react";
 
-const OnePageCrud = () => {
+const SinglePageCrud = () => {
   const [formData, setFormData] = useState([]);
   const [editState, setEditState] = useState(false);
   const [editId, setEditId] = useState();
@@ -11,8 +11,8 @@ const OnePageCrud = () => {
   const [gender, setGender] = useState("");
   const [phone, setPhone] = useState();
   const [age, setAge] = useState();
-  const [hobby, setHobby] = useState({cricket:false, music:false, travelling:false});
 
+  const [hobby2, setHobby2] = useState([]);
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -23,16 +23,16 @@ const OnePageCrud = () => {
         gender: gender,
         phone: phone,
         age: age,
-        hobby: hobby,
+        hobby: hobby2,
       };
-      console.log(data)
+      console.log(data);
       setFormData([...formData, data]);
 
       setName("");
       setGender("");
       setPhone("");
       setAge("");
-      setHobby({cricket:false, music:false, travelling:false});
+      setHobby2([])
     } else {
       let data = {
         id: editId,
@@ -40,7 +40,7 @@ const OnePageCrud = () => {
         gender: gender,
         phone: phone,
         age: age,
-        hobby: hobby,
+        hobby: hobby2,
       };
       let result = formData.map((item) => {
         if (item.id === editId) {
@@ -57,10 +57,9 @@ const OnePageCrud = () => {
       setGender("");
       setPhone("");
       setAge("");
-      setHobby({cricket:false, music:false, travelling:false});
+      setHobby2([])
     }
   }
-
 
   function handleEdit(items) {
     setName(items.name);
@@ -68,7 +67,7 @@ const OnePageCrud = () => {
     setPhone(items.phone);
     setAge(items.age);
     setEditId(items.id);
-    setHobby(items.hobby);
+    setHobby2(items.hobby);
     setEditState(true);
   }
 
@@ -76,7 +75,21 @@ const OnePageCrud = () => {
     let result = formData.filter((item) => item.id !== id);
     setFormData(result);
   }
-console.log(hobby)
+
+  const handleChangeChecked = (e) => {
+    let name = e.target.name;
+
+    if (hobby2?.includes(name)) {
+      let filteredData = hobby2?.filter((er) => er !== name);
+
+      setHobby2(filteredData);
+    } else {
+      //   setHobby2((prev) => [...prev, name]);
+      setHobby2([...hobby2, name]);
+    }
+  };
+
+  console.log(formData);
   return (
     <div>
       <div>
@@ -112,11 +125,26 @@ console.log(hobby)
           placeholder="enter your age"
         />
         <label>Hobby: </label>
-        <input checked={hobby.cricket} onChange={(e) => setHobby({...hobby, cricket:e.target.checked})} type="checkbox"  />
+        <input
+          checked={hobby2?.includes("cricket") ? true : false}
+          name="cricket"
+          onChange={(e) => handleChangeChecked(e)}
+          type="checkbox"
+        />
         <lable>Cricket</lable>
-        <input checked={hobby.music} onChange={(e) => setHobby({...hobby, music:e.target.checked})} type="checkbox" />
+        <input
+          checked={hobby2?.includes("music") ? true : false}
+          name="music"
+          onChange={(e) => handleChangeChecked(e)}
+          type="checkbox"
+        />
         <lable>Music</lable>
-        <input checked={hobby.travelling} onChange={(e) => setHobby({...hobby, travelling:e.target.checked})} type="checkbox" />
+        <input
+          checked={hobby2?.includes("travelling") ? true : false}
+          name="travelling"
+          onChange={(e) => handleChangeChecked(e)}
+          type="checkbox"
+        />
         <lable>Travelling</lable>
         <button type="submit">Submit</button>
       </form>
@@ -132,15 +160,12 @@ console.log(hobby)
             <th scope="col">Action</th>
           </tr>
           {formData.map((item) => (
-
-            
             <tr>
-           {console.log(item.hobby.cricket)}
               <td>{item.name}</td>
               <td>{item.gender}</td>
               <td>{item.phone}</td>
               <td>{item.age}</td>
-              <td>{item.hobby.cricket ? "Cricket" : "" } {item.hobby.music ? ",music" : ""} {item.hobby.travelling ? ",travelling" : ""}</td>
+              <td>{item.hobby}</td>
               <td>
                 <button
                   onClick={() => {
@@ -149,7 +174,13 @@ console.log(hobby)
                 >
                   Edit
                 </button>
-                <button onClick={() => {handleDelete(item.id)}}>Delete</button>
+                <button
+                  onClick={() => {
+                    handleDelete(item.id);
+                  }}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
@@ -159,4 +190,4 @@ console.log(hobby)
   );
 };
 
-export default OnePageCrud;
+export default SinglePageCrud;
